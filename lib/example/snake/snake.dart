@@ -1,28 +1,39 @@
 
-import 'dart:js_util';
 import 'dart:math';
 
 import 'package:engen/main/engenGate.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class Snake extends MatrixEngine  {
  // setting
   @override
   Color get backgroundColor =>Colors.grey[900];
 
   @override
-  Duration setTimer() => Duration(seconds: 1);
+  Duration setTimer() => Duration(milliseconds: 100);
 
   @override
-  int setXAxisCount() => 20 ;
+  int setXAxisCount() => 100 ;
 
   Snake(){
-    items.add(Items(color: Colors.white,pixelsCoordinates: [Point(10, 15)] ));
+    MatrixEngine.items.add(Items(color: Colors.white,pixelsCoordinates: [Point(10, 15)] ));
   }
+  var x = 0 ;
   @override
   void logic() {
-
-    timer = Duration(seconds: 1) ;
-    items[0].pixelsCoordinates = [Point(0, 5)] ;
+    if(x>=yAxisCount) x = 0 ;
+    MatrixEngine.items[0].pixelsCoordinates = [Point(3, x++)] ;
+  }
+  @override
+  Widget pixel({Key k, Color color}) {
+    return Container(
+      color: color,
+      key: k,
+      child: SizedBox(
+        height: pixelSize.height,
+        width: pixelSize.width,
+      ),
+    );
   }
 }
