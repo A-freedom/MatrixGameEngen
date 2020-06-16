@@ -1,4 +1,5 @@
 
+import 'dart:js_util';
 import 'dart:math';
 
 import 'package:engen/main/engenGate.dart';
@@ -20,6 +21,7 @@ class Snake extends MatrixEngine  {
   }
   @override
   void logic() {
+
     timer = Duration(seconds: 1) ;
     items[0].pixelsCoordinates = [Point(0, 5)] ;
   }
