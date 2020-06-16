@@ -11,3 +11,9 @@
   *TODO: solve the unknown floating pixel
   * TODO: solve the shift positioned pixel &  getPosition customisation
 */
+
+/*++++++++++++++++IDEA TO DEVELOPING++++++++++++++++*/
+
+/*
+  *TODO:study the time feature in flame engine & find way to add it into my engine
+*/
