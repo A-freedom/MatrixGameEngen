@@ -7,7 +7,7 @@ import 'package:flutter/scheduler.dart';
 
 // ignore: must_be_immutable
 abstract class MatrixEngine extends StatefulWidget {
-  /*---------------------SETTER---------------------*/
+  /*++++++++++++++++SETTER++++++++++++++++*/
 
   /*set the default values of the timer & the xAxisCount
   * & make sure that no one of them is (NULL) */
@@ -19,7 +19,7 @@ abstract class MatrixEngine extends StatefulWidget {
     assert(isNotNull(timer));
   }
 
-  /*---------------------OVERRIDE ASSERT---------------------*/
+  /*++++++++++++++++OVERRIDE ASSERT++++++++++++++++*/
 
   Duration setTimer();
 
@@ -27,7 +27,7 @@ abstract class MatrixEngine extends StatefulWidget {
 
   logic();
 
-  /*---------------------DEFINE GLOBAL VARIABLES---------------------*/
+  /*++++++++++++++++DEFINE GLOBAL VARIABLES++++++++++++++++*/
 
   /*this just a instance of R&om class I put it here just because I thought it
   * it will get used so many times in any future functions of user usage
@@ -78,7 +78,7 @@ abstract class MatrixEngine extends StatefulWidget {
   * render complex object on the screen than control them*/
   static List<Items> items = new List();
 
-  /*---------------------THIS CLASS FUNCTIONS---------------------*/
+  /*++++++++++++++++THIS CLASS FUNCTIONS++++++++++++++++*/
 
   /*this function is get set from low level class . it use to set new timer &
   * fire setState from the class $ItemsViewer .
@@ -135,7 +135,7 @@ abstract class MatrixEngine extends StatefulWidget {
 }
 
 class _MatrixEngineState extends State<MatrixEngine> {
-  /*---------------------OVERRIDE EXTENDS FUNCTIONS---------------------*/
+  /*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
 
   /*override the build function to  build my engine widget*/
   @override
@@ -188,7 +188,7 @@ class ItemsDisplay extends StatefulWidget {
 }
 
 class _ItemsDisplayState extends State<ItemsDisplay> {
-  /*---------------------DEFINE GLOBAL VALUES---------------------*/
+  /*++++++++++++++++DEFINE GLOBAL VALUES++++++++++++++++*/
 
   /*this 2D matrix used to save all pixels positioned
   *
@@ -197,7 +197,7 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
   List<List<Offset>> _offsetList = new List();
 
 
-  /*---------------------OVERRIDE EXTENDS FUNCTIONS---------------------*/
+  /*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
 
   /*this override used to fire some functions once this widget get render*/
   @override
