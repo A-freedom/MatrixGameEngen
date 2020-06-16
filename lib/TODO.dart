@@ -1,6 +1,7 @@
 /*++++++++++++++++FEATURES TO ADD++++++++++++++++*/
 
 /*
+  *TODO: create start & loop ; overrideable function to give the user a batter control
   *TODO: touch listener
 */
 
