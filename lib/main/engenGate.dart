@@ -4,14 +4,12 @@ import 'dart:math';
 import 'package:engen/main/etc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-
 // ignore: must_be_immutable
 abstract class MatrixEngine extends StatefulWidget {
-  /*set the default values of the timer and the xAxisCount
-  * and make sure that no one of them is (NULL) */
-
   /*---------------------SETTER---------------------*/
 
+  /*set the default values of the timer and the xAxisCount
+  * and make sure that no one of them is (NULL) */
 
   MatrixEngine() {
     timer = setTimer();
@@ -19,6 +17,7 @@ abstract class MatrixEngine extends StatefulWidget {
     assert(isNotNull(xAxisCount));
     assert(isNotNull(timer));
   }
+
   /*---------------------OVERRIDE ASSERT---------------------*/
 
   Duration setTimer();
@@ -26,7 +25,6 @@ abstract class MatrixEngine extends StatefulWidget {
   int setXAxisCount();
 
   logic();
-
 
   /*---------------------DEFINE GLOBAL VARIABLES---------------------*/
 
@@ -72,13 +70,21 @@ abstract class MatrixEngine extends StatefulWidget {
   * render complex object on the screen than control them*/
   List<Items> items = new List();
 
+  /*---------------------THIS CLASS FUNCTIONS---------------------*/
+
+  /*this function is get set from low level class . it use to set new timer
+  * and fire setState from the class $ItemsViewer .
+  *
+  * NOTE : the itemsViewer for now is function in the future it will get refactor
+  *        to StatefulWidget class */
+  Function(Duration timer) setNewPeriodic;
+
   /*this function should return a list of widget contend in container each one of
   * them is a Positioned widget  each Positioned widget it is a pixel on the screen
   * that represent on point with its color that came from the $items list*/
 
-  /*---------------------THIS CLASS FUNCTIONS---------------------*/
-
-  Widget get timesView {
+  // TODO cast this function to StatefulWidget class
+  Widget get itemsViewer {
     // this just in case to avoid (WIDGET SHOULDN'T BE NULL ERROR)
     if (_offsetList.isEmpty) return Container();
     // create a interim list to content all Positioned widget
@@ -103,12 +109,15 @@ abstract class MatrixEngine extends StatefulWidget {
     );
   }
 
-  // ignore: missing_return
+  /*this function is to get the offset of widget by it own unique KEY*/
   Offset getPositions(GlobalKey k) {
     final RenderBox renderBoxRed = k.currentContext.findRenderObject();
     return renderBoxRed.localToGlobal(Offset.zero);
   }
 
+  /*this function return a Row content a Columns
+  * row children length = xAxis
+  * column children length = yAxis*/
   Widget backgroundNet() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -116,6 +125,7 @@ abstract class MatrixEngine extends StatefulWidget {
         _keysList.add(new List());
         return Column(
           children: List(yAxisCount).map((e) {
+            // set the pixel widget get in the global _keysList matrix
             final k = new GlobalKey();
             final w = pixel(k: k);
             _keysList.last.add(k);
@@ -126,6 +136,8 @@ abstract class MatrixEngine extends StatefulWidget {
     );
   }
 
+  /*this function return on single pixel with its color it is able to customise
+  * by override it in the user class */
   Widget pixel({Key k, Color color}) => Container(
         key: k,
         padding: EdgeInsets.all(2),
@@ -141,20 +153,28 @@ abstract class MatrixEngine extends StatefulWidget {
         ),
       );
 
+  /* create the main Widget by Override the createState() */
   @override
   _MatrixEngineState createState() => _MatrixEngineState();
 }
 
 class _MatrixEngineState extends State<MatrixEngine> {
+  /*---------------------OVERRIDE EXTENDS FUNCTIONS---------------------*/
+
+  /*this function fire after the this widget get rendered
+  * it used to run functions that I  wanna them to run once the widget
+  * get rendered and just for once*/
   @override
   void initState() {
+    widget.setNewPeriodic = _startPeriodic;
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _assembly();
-      _refresh();
+      _startPeriodic(widget.timer);
     });
   }
 
+  /*override the build function to  build my engine widget*/
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -174,27 +194,25 @@ class _MatrixEngineState extends State<MatrixEngine> {
       return Container(
         color: widget.backgroundColor,
         child: Stack(
-          children: <Widget>[widget.backgroundNet(), widget.timesView],
+          children: <Widget>[widget.backgroundNet(), widget.itemsViewer],
         ),
       );
     });
   }
-
-  _refresh() async {
-    void run() {
-      widget.loop?.cancel();
-      widget.loop = Timer.periodic(widget.timer, (timer) {
-        // TODO makes this rebuilt just the viewer widget no the engine widget
-        setState(() {
-          widget.logic();
-          run();
-        });
+  /*this function is use to start the main loop that rebuild the view widget
+  * and refire the $widget.logic()*/
+  _startPeriodic(Duration timer) async {
+    widget.timer = timer;
+    widget.loop?.cancel();
+    widget.loop = Timer.periodic(timer, (t) {
+      // TODO: makes this rebuilt just the viewer widget no the engine widget
+      setState(() {
+        widget.logic();
       });
-    }
-
-    run();
+    });
   }
-
+  /*this function is use to assembly every pixel coordinates and
+  * and save it in widget._offsetList to use it in render the items on the screen */
   _assembly() {
     widget._keysList.forEach((x) {
       widget._offsetList.add(new List());
@@ -204,7 +222,7 @@ class _MatrixEngineState extends State<MatrixEngine> {
     });
   }
 }
-
+/*the Items class it use to save and manage the items properties */
 class Items {
   Color color;
   bool active;
