@@ -1,0 +1,1 @@
+bool isNotNull(val)=> (val != null) ? true  :  false ;
