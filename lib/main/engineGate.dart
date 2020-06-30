@@ -43,10 +43,13 @@ abstract class MatrixEngine extends StatefulWidget {
 
   }
 
-  set pixel(Widget widget) {
+  set pixel(widget) {
 //    TODO find way to overwrite _pixel function
   }
 
+  set itemsList(Map list){
+    items = list ;
+  }
   /*++++++++++++++++getter++++++++++++++++*/
 
   /*this just a instance of R&om class I put it here just because I thought it
@@ -59,19 +62,21 @@ abstract class MatrixEngine extends StatefulWidget {
   /* set a background color */
   Color backgroundColor;
 
-  get enginePosition => engineOffset;
+  Offset get enginePosition => engineOffset;
 
-  get boxSize => _boxSize;
+  Size get boxSize => _boxSize;
 
-  get pixelSize => _pixelSize;
+  Size get pixelSize => _pixelSize;
 
-  get gestureSize => _gestureSize;
+  Size get gestureSize => _gestureSize;
 
-  get xAxisLength => _xAxisLength;
+  int get xAxisLength => _xAxisLength;
 
-  get yAxisLength => _yAxisLength;
+  int get yAxisLength => _yAxisLength;
 
-  get loopControl => _loopControl;
+  Timer get loopControl => _loopControl;
+
+  Map get itemsList => items ;
 
   Widget _pixel({Color color}) => Container(
         padding: EdgeInsets.all(1),

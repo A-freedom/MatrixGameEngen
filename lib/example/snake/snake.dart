@@ -8,7 +8,7 @@ Y8888P' Y88888P YP   YP  `Y88P' YP   YD   Y88888P Y888888P    YP    Y88888P `888
 
 import 'dart:math';
 
-import 'package:engen/main/engenGate.dart';
+import 'package:engen/main/engineGate.dart';
 import 'package:engen/main/etc.dart';
 import 'package:flutter/material.dart';
 
@@ -24,14 +24,14 @@ class Snake extends MatrixEngine {
         position: Point<int>(
             random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
 
-    if(s.length > yAxisLength*xAxisLength/10){
+    if(s.length > yAxisLength*xAxisLength/20){
       final r = random.nextInt(s.length);
       s[r].remove();
       s.removeAt(r);
     }
-    s?.forEach((element) {
-      element.moveDown(1);
-    });
+   for(var i=0 ; i < 6 ; i++){
+     s[random.nextInt(s.length)].moveDown(1) ;
+   }
 
   }
 
@@ -39,7 +39,7 @@ class Snake extends MatrixEngine {
   setting() {
     width = 40;
     backgroundColor = Colors.black;
-    circleTimer =  16;
+    circleTimer =  20;
   }
 
   @override
@@ -49,6 +49,7 @@ class Snake extends MatrixEngine {
 
   @override
   onTap() {
-    MatrixEngine.items.clear();
+    itemsList.clear();
+    s = new List() ;
   }
 }

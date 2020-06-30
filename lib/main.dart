@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       home: Padding(
         padding: const EdgeInsets.all(0.0),
-        child: SafeArea(child: Snake()),
+        child: Snake(),
       ),
     );
   }
