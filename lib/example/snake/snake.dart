@@ -14,42 +14,71 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class Snake extends MatrixEngine {
-  static List<ItemControl> s = new List() ;
+  static ItemControl top = ItemControl([]),left = ItemControl([]),down = ItemControl([]),right = ItemControl([]);
+
   @override
   loop() {
-    s.add(createItem(
-        pixelMatrix: [
-          [0, 0]
-        ],
-        position: Point<int>(
-            random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
+    top.join(createItem(
+        pixelMatrix: [[0, 0]],
+        position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
+    left.join(createItem(
+        pixelMatrix: [[0, 0]],
+        position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
+    down.join(createItem(
+            pixelMatrix: [[0, 0]],
+            position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
+    right.join(createItem(
+            pixelMatrix: [[0, 0]],
+            position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
 
-    if(s.length > yAxisLength*xAxisLength/20){
-      final r = random.nextInt(s.length);
-      s[r].remove();
-      s.removeAt(r);
+    if (top.itemsIndex.length > yAxisLength * xAxisLength~/25) {
+      top.removeAt( random.nextInt(top.itemsIndex.length) );
     }
-   for(var i=0 ; i < 6 ; i++){
-     s[random.nextInt(s.length)].moveDown(1) ;
-   }
-
+    if (left.itemsIndex.length > yAxisLength * xAxisLength~/25) {
+      left.removeAt( random.nextInt(left.itemsIndex.length) );
+    }
+    if (down.itemsIndex.length > yAxisLength * xAxisLength~/25) {
+      down.removeAt( random.nextInt(down.itemsIndex.length) );
+    }
+    if (right.itemsIndex.length > yAxisLength * xAxisLength~/25) {
+      right.removeAt( random.nextInt(right.itemsIndex.length) );
+    }
+    top.moveDown(1);
+    left.moveRight(1);
+//    down.moveUp(1);
+//    right.moveLeft(1);
   }
 
   @override
   setting() {
-    width = 40;
+    width = 14;
     backgroundColor = Colors.black;
-    circleTimer =  20;
+    circleTimer = 2000;
+    pixel = ({Color color}) {
+      return Container(
+        padding: EdgeInsets.all(1),
+        child: Container(
+          child: SizedBox(
+            width: pixelSize.width - 2,
+            height: pixelSize.height - 2,
+            child: Center(
+              child: Text(random.nextInt(2).toString(),style: TextStyle(color: color,fontSize: pixelSize.height-1),),
+            ),
+          ),
+        ),
+      );
+    };
   }
 
   @override
-  setup() {
-
-  }
-
+  setup() {}
   @override
   onTap() {
-    itemsList.clear();
-    s = new List() ;
+    top.clear();
+    left.clear();
+    right.clear();
+    down.clear();
   }
+
+
 }

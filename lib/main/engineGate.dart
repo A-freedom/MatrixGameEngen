@@ -43,12 +43,17 @@ abstract class MatrixEngine extends StatefulWidget {
 
   }
 
-  set pixel(widget) {
-//    TODO find way to overwrite _pixel function
+  set pixel(Function pi) {
+    _pixel = pi ;
   }
 
   set itemsList(Map list){
     items = list ;
+  }
+
+  set setBackgroundColor(Color color){
+    backgroundColor = color ;
+//    rebuild() ;
   }
   /*++++++++++++++++getter++++++++++++++++*/
 
@@ -59,7 +64,6 @@ abstract class MatrixEngine extends StatefulWidget {
 
   Random random = new Random();
 
-  /* set a background color */
   Color backgroundColor;
 
   Offset get enginePosition => engineOffset;
@@ -78,17 +82,18 @@ abstract class MatrixEngine extends StatefulWidget {
 
   Map get itemsList => items ;
 
-  Widget _pixel({Color color}) => Container(
-        padding: EdgeInsets.all(1),
-        child: Container(
-          color: (isNotNull(color)) ? color : Colors.grey[700],
-          child: SizedBox(
-            width: _pixelSize.width - 2,
-            height: _pixelSize.height - 2,
-          ),
+  Function _pixel = ({Color color}) {
+    return Container(
+      padding: EdgeInsets.all(1),
+      child: Container(
+        color: (isNotNull(color)) ? color : Colors.grey[700],
+        child: SizedBox(
+          width: _pixelSize.width - 2,
+          height: _pixelSize.height - 2,
         ),
-      );
-
+      ),
+    );
+  };
   /*++++++++++++++++OVERRIDE ASSERT++++++++++++++++*/
 
 
