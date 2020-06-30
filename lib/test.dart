@@ -5,50 +5,10 @@ d8888b. db       .d8b.   .o88b. db   dD   db      d888888b db    db d88888b .d88
 88~~~b. 88      88~~~88 8b      88`8b     88         88    `8b  d8' 88~~~~~   `Y8b.   88  88  88 88~~~88    88       88    88~~~~~ 88`8b
 88   8D 88booo. 88   88 Y8b  d8 88 `88.   88booo.   .88.    `8bd8'  88.     db   8D   88  88  88 88   88    88       88    88.     88 `88.
 Y8888P' Y88888P YP   YP  `Y88P' YP   YD   Y88888P Y888888P    YP    Y88888P `8888Y'   YP  YP  YP YP   YP    YP       YP    Y88888P 88   YD*/
-
 import 'dart:math';
 
-import 'package:engen/main/engenGate.dart';
-import 'package:engen/main/etc.dart';
-import 'package:flutter/material.dart';
-
-// ignore: must_be_immutable
-class Snake extends MatrixEngine {
-  static List<ItemControl> s = new List() ;
-  @override
-  loop() {
-    s.add(createItem(
-        pixelMatrix: [
-          [0, 0]
-        ],
-        position: Point<int>(
-            random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
-
-    if(s.length > yAxisLength*xAxisLength/10){
-      final r = random.nextInt(s.length);
-      s[r].remove();
-      s.removeAt(r);
-    }
-    s?.forEach((element) {
-      element.moveDown(1);
-    });
-
-  }
-
-  @override
-  setting() {
-    width = 40;
-    backgroundColor = Colors.black;
-    circleTimer =  16;
-  }
-
-  @override
-  setup() {
-
-  }
-
-  @override
-  onTap() {
-    MatrixEngine.items.clear();
-  }
+main(){
+  Function d = (){
+    return print('object');
+  };
 }

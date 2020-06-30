@@ -1,3 +1,11 @@
+/*
+d8888b. db       .d8b.   .o88b. db   dD   db      d888888b db    db d88888b .d8888.   .88b  d88.  .d8b.  d888888b d888888b d88888b d8888b.
+88  `8D 88      d8' `8b d8P  Y8 88 ,8P'   88        `88'   88    88 88'     88'  YP   88'YbdP`88 d8' `8b `~~88~~' `~~88~~' 88'     88  `8D
+88oooY' 88      88ooo88 8P      88,8P     88         88    Y8    8P 88ooooo `8bo.     88  88  88 88ooo88    88       88    88ooooo 88oobY'
+88~~~b. 88      88~~~88 8b      88`8b     88         88    `8b  d8' 88~~~~~   `Y8b.   88  88  88 88~~~88    88       88    88~~~~~ 88`8b
+88   8D 88booo. 88   88 Y8b  d8 88 `88.   88booo.   .88.    `8bd8'  88.     db   8D   88  88  88 88   88    88       88    88.     88 `88.
+Y8888P' Y88888P YP   YP  `Y88P' YP   YD   Y88888P Y888888P    YP    Y88888P `8888Y'   YP  YP  YP YP   YP    YP       YP    Y88888P 88   YD*/
+
 import 'dart:async';
 import 'dart:math';
 
@@ -7,46 +15,133 @@ import 'package:flutter/scheduler.dart';
 
 // ignore: must_be_immutable
 abstract class MatrixEngine extends StatefulWidget {
-  /*++++++++++++++++SETTER++++++++++++++++*/
 
-  /*set the default values of the timer & the xAxisCount
-  * & make sure that no one of them is (NULL) */
-
-  MatrixEngine() {
-    timer = setTimer();
-    xAxisCount = setXAxisCount();
-    assert(isNotNull(xAxisCount));
-    assert(isNotNull(timer));
+  MatrixEngine(){
+    setting() ;
   }
 
-  /*++++++++++++++++OVERRIDE ASSERT++++++++++++++++*/
+  void Function() rebuild;
 
-  Duration setTimer();
+  /*++++++++++++++++setter++++++++++++++++*/
 
-  int setXAxisCount();
 
-  logic();
 
-  /*++++++++++++++++DEFINE GLOBAL VARIABLES++++++++++++++++*/
+  set circleTimer(int fps) {
+    _timer = Duration(milliseconds: fps) ;
+  }
+
+  set width(int width) {
+    _xAxisLength = width;
+    if(isNotNull(rebuild)) rebuild();
+  }
+
+  set interactWithTheEdges(String react) => _interactWithTheEdges = react;
+
+  set gestureSize(Size size) {
+    _gestureSize = size;
+    if(isNotNull(rebuild)) rebuild();
+
+  }
+
+  set pixel(Widget widget) {
+//    TODO find way to overwrite _pixel function
+  }
+
+  /*++++++++++++++++getter++++++++++++++++*/
 
   /*this just a instance of R&om class I put it here just because I thought it
   * it will get used so many times in any future functions of user usage
   *
   * NOTE: I disable this variable until I will need it*/
 
-//  Random random = new Random();
+  Random random = new Random();
 
   /* set a background color */
   Color backgroundColor;
 
+  get enginePosition => engineOffset;
+
+  get boxSize => _boxSize;
+
+  get pixelSize => _pixelSize;
+
+  get gestureSize => _gestureSize;
+
+  get xAxisLength => _xAxisLength;
+
+  get yAxisLength => _yAxisLength;
+
+  get loopControl => _loopControl;
+
+  Widget _pixel({Color color}) => Container(
+        padding: EdgeInsets.all(1),
+        child: Container(
+          color: (isNotNull(color)) ? color : Colors.grey[700],
+          child: SizedBox(
+            width: _pixelSize.width - 2,
+            height: _pixelSize.height - 2,
+          ),
+        ),
+      );
+
+  /*++++++++++++++++OVERRIDE ASSERT++++++++++++++++*/
+
+
+  loop();
+
+  setup();
+
+  setting() ;
+
+
+  /*???????????????? TOUCH CONTROL ????????????????*/
+
+  onTap() {}
+
+  onTapCancel() {}
+
+  onTapUp(TapUpDetails details) {}
+
+  onTapDown(TapDownDetails details) {}
+
+  onLongPress() {}
+
+  onLongPressEnd(LongPressEndDetails details) {}
+
+  onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {}
+
+  onLongPressUp() {}
+
+  ongPressStart(LongPressStartDetails details) {}
+
+  onLongPressStart(LongPressStartDetails details) {}
+
+  onSwapUp(DragEndDetails details) {}
+
+  onSwapDown(DragEndDetails details) {}
+
+  onSwapLeft(DragEndDetails details) {}
+
+  onSwapRight(DragEndDetails details) {}
+
+  onVerticalDragUpdate(DragUpdateDetails details) {}
+
+  onHorizontalDragUpdate(DragUpdateDetails details) {}
+
+  /*++++++++++++++++Public allowed+++++++++++++++*/
+
+  static String _interactWithTheEdges = 'invert';
+
+  static Offset engineOffset;
+
   /* it is the size of the Widget builder*/
-  Size boxSize;
+  static Size _boxSize;
 
   /* it is the size of one pixel */
-  Size pixelSize;
+  static Size _pixelSize;
 
   /* it is the size of touch area */
-  Size gestureSize;
+  Size _gestureSize;
 
   /*the amount of pixel in x axis & y axis
   * the $xAxisCount got a default value is 10
@@ -54,31 +149,44 @@ abstract class MatrixEngine extends StatefulWidget {
   * the 10 value here for just avoid
   * (CALL ON NULL ERROR) if the user forget to set a value
   * & the $yAxisCount it get set by the screen height */
-  int xAxisCount = 10, yAxisCount;
+  static int _xAxisLength = 10, _yAxisLength;
 
   /* this is the array of (x,y) matrix
   *  it is work by first set each pixel globalKey the after all widget tree get
   * rendered it will run the get $getPositions(GlobalKey k) function  then set
   * the value in its place in the $_offsetList 2D matrix
   * NOTE: the $_keysList is set to static & the $_keyList is moved to $ItemsDisplay class*/
-  static List<List<Key>> _keysList = new List();
-
+//  static List<List<Key>> _keysList = new List();
 
   /*this is the main loop it will call the 'periodic' Depending on the timer
   * the periodic will fire the $logic() function then rebuild the $Viewer Widget
   *
   * NOTE: these tow variable are set to static because I needed to control
   * them from $ItemsDisplay class */
-  static Timer loop;
-  static Duration timer;
+
+  static Timer _loopControl;
+  static Duration _timer ;
 
   /*this is the list of item that will build on  the screen in each frame
   * the $Items class could content a list of points & its color that will render
   * on the screen & could content list of $Items that should in theory help to
   * render complex object on the screen than control them*/
-  static List<Items> items = new List();
+  static Map<UniqueKey,Item> items = new Map<UniqueKey,Item>();
 
   /*++++++++++++++++THIS CLASS FUNCTIONS++++++++++++++++*/
+
+  ItemControl createItem(
+      {List<List<int>> pixelMatrix, Color color, Point<int> position}) {
+    final coordinates = pixelMatrix.map((e) => Point<int>(e[0], e[1])).toList();
+    color = (isNotNull(color))?color:Color.fromRGBO(random.nextInt(244), random.nextInt(244),
+        random.nextInt(244), random.nextInt(244).toDouble());
+    final key = new UniqueKey() ;
+    items[key] = (Item(
+        pixelsCoordinates: (coordinates),
+        itemPosition: position,
+        color: color));
+    return ItemControl([key]);
+  }
 
   /*this function is get set from low level class . it use to set new timer &
   * fire setState from the class $ItemsViewer .
@@ -88,100 +196,125 @@ abstract class MatrixEngine extends StatefulWidget {
   *
   * NOTE: $itemsViewer is get replace with the $ItemDisplay class &
   * the function get set to static*/
-  static Function(Duration timer) setNewPeriodic;
-
-  /*this function return a Row content a Columns .
-  * row children length = xAxis
-  * column children length = yAxis*/
-  Widget backgroundNet() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List(xAxisCount).map((e) {
-        _keysList.add(new List());
-        return Column(
-          children: List(yAxisCount).map((e) {
-            // set the pixel widget get in the global _keysList matrix
-            final k = new GlobalKey();
-            final w = pixel(k: k);
-            _keysList.last.add(k);
-            return w;
-          }).toList(),
-        );
-      }).toList(),
-    );
-  }
-
-  /*this function return on single pixel with its color it is able to customise
-  * by override it in the user class */
-  Widget pixel({Key k, Color color}) =>
-      Container(
-        key: k,
-        padding: EdgeInsets.all(2),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: Container(
-            color: (isNotNull(color)) ? color : Colors.blue,
-            child: SizedBox(
-              width: pixelSize.width - 4,
-              height: pixelSize.height - 4,
-            ),
-          ),
-        ),
-      );
+  static Function _startNewPeriodic;
 
   /* create the main Widget by Override the createState() */
   @override
   _MatrixEngineState createState() => _MatrixEngineState();
 }
 
-class _MatrixEngineState extends State<MatrixEngine> {
+class _MatrixEngineState extends State<MatrixEngine> with MyMath {
   /*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
+  void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if(MatrixEngine._startNewPeriodic != null){
+      widget.setup() ;
+    }
+    });
+    super.initState();
+  }
+
+  @override
+  void setState(fn) {
+    if(MatrixEngine._startNewPeriodic != null){
+      widget.setup() ;
+    }
+    //TODO remove this when you be out of developing time
+    super.setState(fn);
+  }
 
   /*override the build function to  build my engine widget*/
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      widget.backgroundColor ??= Colors.grey;
-      /* by default it is grey */
-      widget.boxSize ??= constraints.biggest;
-      /* by default owner widget */
-      widget.gestureSize ??= widget.boxSize;
-      /* it is the size of the touch listener by default owner widget */
-      widget.pixelSize ??= Size((widget.boxSize.width / widget.xAxisCount),
-          (widget.boxSize.width / widget.xAxisCount));
-      /* it is automatic set dependent to the boxSize & the xAxisCount  */
-      widget.yAxisCount ??=
-          (widget.boxSize.height ~/ widget.pixelSize.width).toInt();
-      /* by default it get by divided the widget height into the one pixel size  */
+    widget.rebuild = () => setState(() {});
 
-      return Container(
-        color: widget.backgroundColor,
-        child: Stack(
-          children: <Widget>[
-            widget.backgroundNet(),
-            ItemsDisplay(pixel: widget.pixel, logic: widget.logic,)
-          ],
-        ),
-      );
-    });
+    assert(isNotNull(MatrixEngine._xAxisLength));
+    return GestureDetector(
+      onTap: widget.onTap,
+      onTapDown: widget.onTapDown,
+      onTapUp: (d) => widget.onTapUp,
+      onTapCancel: () => widget.onTapCancel,
+      onLongPress: widget.onLongPress,
+      onLongPressStart: widget.onLongPressStart,
+      onLongPressEnd: widget.onLongPressEnd,
+      onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
+      onLongPressUp: widget.onLongPressUp,
+      onVerticalDragUpdate: widget.onVerticalDragUpdate,
+      onHorizontalDragUpdate: widget.onHorizontalDragUpdate,
+      onHorizontalDragEnd: (DragEndDetails details) {
+        final direction =
+            details.velocity.pixelsPerSecond.direction * (180 / pi);
+        final angle = (direction < 0) ? direction + 360 : direction;
+        if (isBetween(angle, 0, 45) || isBetween(angle, 315, 359)) {
+          widget.onSwapRight(details);
+        } else if (isBetween(angle, 135, 225)) {
+          widget.onSwapLeft(details);
+        }
+      },
+      onVerticalDragEnd: (DragEndDetails details) {
+        final direction =
+            details.velocity.pixelsPerSecond.direction * (180 / pi);
+        final angle = (direction < 0) ? direction + 360 : direction;
+        if (isBetween(angle, 255, 359)) {
+          widget.onSwapUp(details);
+        } else if (isBetween(angle, 45, 135) || isBetween(angle, 315, 359)) {
+          widget.onSwapDown(details);
+        }
+      },
+      child: LayoutBuilder(builder: (context, constraints) {
+        MatrixEngine.engineOffset = constraints.biggest.topLeft(Offset.zero);
+        /* by default it is grey */
+        widget.backgroundColor ??= Colors.grey;
+
+        /* by default owner widget */
+        MatrixEngine._boxSize ??= constraints.biggest;
+
+        /* it is the size of the touch listener by default owner widget */
+        widget._gestureSize ??= MatrixEngine._boxSize;
+
+        /* it is automatic set dependent to the boxSize & the xAxisCount  */
+        MatrixEngine._pixelSize ??= Size(
+            (MatrixEngine._boxSize.width / MatrixEngine._xAxisLength),
+            (MatrixEngine._boxSize.width / MatrixEngine._xAxisLength));
+
+        /* by default it get by divided the widget height into the one pixel size  */
+        MatrixEngine._yAxisLength ??=
+            (MatrixEngine._boxSize.height ~/ MatrixEngine._pixelSize.width)
+                .toInt();
+
+        return Container(
+          color: widget.backgroundColor,
+          child: Stack(
+            children: <Widget>[
+//              Row(
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: List(MatrixEngine._xAxisLength).map((e) {
+//                  return Column(
+//                    children: List(MatrixEngine._yAxisLength).map((e) {
+//                      final w = widget._pixel();
+//                      return w;
+//                    }).toList(),
+//                  );
+//                }).toList(),
+//              )
+//              ,
+              ItemsDisplay(
+                  pixel: widget._pixel, loop: widget.loop, setup: widget.setup)
+            ],
+          ),
+        );
+      }),
+    );
   }
-
-}
-/*the Items class it use to save & manage the items properties */
-class Items {
-  Color color;
-  bool active;
-  List<Point> pixelsCoordinates;
-
-  Items({this.color, this.pixelsCoordinates, this.active});
 }
 
 // ignore: must_be_immutable
 class ItemsDisplay extends StatefulWidget {
-  Function logic;
+  Function loop;
   Function pixel;
+  Function setup;
 
-  ItemsDisplay({this.logic, this.pixel});
+  ItemsDisplay({this.loop, this.pixel, this.setup});
 
   @override
   _ItemsDisplayState createState() => _ItemsDisplayState();
@@ -194,74 +327,83 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
   *
   * NOTE: the value used to be in the main engine class
   * it get moved to here because be in the main class t is no longer required */
-  List<List<Offset>> _offsetList = new List();
-
 
   /*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
 
   /*this override used to fire some functions once this widget get render*/
   @override
   void initState() {
-    /*TODO: make sure that is function fired once this
-       widget get rendered and just for one time not ever time this widget
-       get rebuild*/
-    MatrixEngine.setNewPeriodic = _startPeriodic;
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _assembly();
-      _startPeriodic(MatrixEngine.timer);
+      MatrixEngine._startNewPeriodic = _startPeriodic;
+      _startPeriodic();
+      widget.setup();
     });
   }
-  /*this override the build function to build the Items on the screen  */
+
+  Point foo(Point p) {
+    int x = p.x, y = p.y;
+
+    if (x > MatrixEngine._xAxisLength - 1) {
+      x %= MatrixEngine._xAxisLength;
+    }
+    if (x < 0) {
+      x %= MatrixEngine._xAxisLength - 1;
+      x += MatrixEngine._xAxisLength - 1;
+    }
+    if (y > MatrixEngine._yAxisLength - 1) {
+      y %= MatrixEngine._yAxisLength;
+    }
+    if (y < 0) {
+      y %= MatrixEngine._yAxisLength - 1;
+      y += MatrixEngine._yAxisLength - 1;
+    }
+    return Point<double>(x.toDouble(), y.toDouble());
+  }
+
+  /*this override the build function to build the _Items on the screen  */
   @override
   Widget build(BuildContext context) {
-    // this just in case to avoid (WIDGET SHOULDN'T BE NULL ERROR)
-    if (_offsetList.isEmpty) return Container();
-    // create a interim list to content all Positioned widget
-    List<Widget> pList = new List();
-    /*looping through all items point & cast each point to a $Pixel widget with
-     its color then  add it interim list $(pList) */
-    MatrixEngine.items.forEach((item) {
-      item.pixelsCoordinates.forEach((coordinate) {
-        final offset = _offsetList[coordinate.x][coordinate.y];
-        pList.add(Positioned(
-          left: offset.dx,
-          top: offset.dy,
+    assert(MatrixEngine._interactWithTheEdges == 'invert' ||
+        MatrixEngine._interactWithTheEdges == 'cross' ||
+        MatrixEngine._interactWithTheEdges == 'block');
+
+    final list = List<Widget>();
+    MatrixEngine.items.values.forEach((item) {
+      item.pixelsCoordinates.forEach((p) {
+        item.itemPosition = intPoint(foo(item.itemPosition));
+        Point point = foo(p + item.itemPosition);
+        point *= MatrixEngine._pixelSize.width;
+        list.add(Positioned(
+          top: point.y,
+          left: point.x,
           child: widget.pixel(color: item.color),
         ));
       });
     });
-    // put the list of positioned widget in container then return it
     return Container(
       child: Stack(
-        children: pList,
+        children: list,
+        overflow: (MatrixEngine._interactWithTheEdges == 'cross')
+            ? Overflow.visible
+            : Overflow.clip,
       ),
     );
   }
 
-  _startPeriodic(Duration timer) async {
-    MatrixEngine.timer = timer;
-    MatrixEngine.loop?.cancel();
-    MatrixEngine.loop = Timer.periodic(timer, (t) {
+  _startPeriodic() async {
+    MatrixEngine._loopControl?.cancel();
+    MatrixEngine._loopControl = Timer.periodic(MatrixEngine._timer, (t) {
       setState(() {
-        widget.logic();
+        widget.loop();
       });
     });
   }
 
-  _assembly() {
-    MatrixEngine._keysList.forEach((x) {
-      _offsetList.add(new List());
-      x.forEach((k) {
-        _offsetList.last.add(getPositions(k));
-      });
-    });
+  Offset getPositionByPoint(Point<int> coordinatePoint) {
+    return Offset(coordinatePoint.x * MatrixEngine._boxSize.width,
+        coordinatePoint.y * MatrixEngine._boxSize.height);
   }
 
-  /*this function is to get the offset of widget by it own unique KEY*/
-  Offset getPositions(GlobalKey k) {
-    final RenderBox renderBoxRed = k.currentContext.findRenderObject();
-    return renderBoxRed.localToGlobal(Offset.zero);
-  }
-
+  Point<int> intPoint(Point p) => Point<int>(p.x.toInt(), p.y.toInt());
 }
