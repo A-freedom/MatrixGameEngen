@@ -17,67 +17,30 @@ class Snake extends MatrixEngine {
   static ItemControl top = ItemControl([]),left = ItemControl([]),down = ItemControl([]),right = ItemControl([]);
 
   @override
-  loop() {
-    top.join(createItem(
-        pixelMatrix: [[0, 0]],
-        position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
-    left.join(createItem(
-        pixelMatrix: [[0, 0]],
-        position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
-    down.join(createItem(
-            pixelMatrix: [[0, 0]],
-            position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
-    right.join(createItem(
-            pixelMatrix: [[0, 0]],
-            position: Point<int>(random.nextInt(xAxisLength), random.nextInt(yAxisLength))));
+  loop(int time) {
 
-    if (top.itemsIndex.length > yAxisLength * xAxisLength~/25) {
-      top.removeAt( random.nextInt(top.itemsIndex.length) );
-    }
-    if (left.itemsIndex.length > yAxisLength * xAxisLength~/25) {
-      left.removeAt( random.nextInt(left.itemsIndex.length) );
-    }
-    if (down.itemsIndex.length > yAxisLength * xAxisLength~/25) {
-      down.removeAt( random.nextInt(down.itemsIndex.length) );
-    }
-    if (right.itemsIndex.length > yAxisLength * xAxisLength~/25) {
-      right.removeAt( random.nextInt(right.itemsIndex.length) );
-    }
-    top.moveDown(1);
-    left.moveRight(1);
-//    down.moveUp(1);
-//    right.moveLeft(1);
   }
 
   @override
   setting() {
-    width = 14;
+    width = 20 ;
+    circleTimer = 1 ;
     backgroundColor = Colors.black;
-    circleTimer = 2000;
-    pixel = ({Color color}) {
-      return Container(
-        padding: EdgeInsets.all(1),
-        child: Container(
-          child: SizedBox(
-            width: pixelSize.width - 2,
-            height: pixelSize.height - 2,
-            child: Center(
-              child: Text(random.nextInt(2).toString(),style: TextStyle(color: color,fontSize: pixelSize.height-1),),
-            ),
-          ),
-        ),
-      );
-    };
   }
 
   @override
-  setup() {}
-  @override
-  onTap() {
-    top.clear();
-    left.clear();
-    right.clear();
-    down.clear();
+  setup() {
+    for(var x = 0 ; x <xAxisLength;x++){
+      for(var y = 0 ; y <yAxisLength;y ++){
+        top.join(
+            createItem(
+                color: Colors.red ,
+                position: Point<int>(x,y),
+                pixelMatrix: [[0,0]]
+            )
+        );
+      }
+    }
   }
 
 

@@ -28,6 +28,12 @@ abstract class MatrixEngine extends StatefulWidget {
 
   set circleTimer(int fps) {
     _timer = Duration(milliseconds: fps) ;
+    if(isNotNull(_startNewPeriodic)){
+      _startNewPeriodic();
+    }
+//    if(isNotNull(rebuild)){
+//      rebuild();
+//    }
   }
 
   set width(int width) {
@@ -97,7 +103,7 @@ abstract class MatrixEngine extends StatefulWidget {
   /*++++++++++++++++OVERRIDE ASSERT++++++++++++++++*/
 
 
-  loop();
+  loop(int time);
 
   setup();
 
@@ -217,13 +223,10 @@ class _MatrixEngineState extends State<MatrixEngine> with MyMath {
   /*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      if(MatrixEngine._startNewPeriodic != null){
       widget.setup() ;
-    }
     });
     super.initState();
   }
-
   @override
   void setState(fn) {
     if(MatrixEngine._startNewPeriodic != null){
@@ -309,7 +312,7 @@ class _MatrixEngineState extends State<MatrixEngine> with MyMath {
 //              )
 //              ,
               ItemsDisplay(
-                  pixel: widget._pixel, loop: widget.loop, setup: widget.setup)
+                  pixel: widget._pixel, loop: widget.loop)
             ],
           ),
         );
@@ -322,9 +325,8 @@ class _MatrixEngineState extends State<MatrixEngine> with MyMath {
 class ItemsDisplay extends StatefulWidget {
   Function loop;
   Function pixel;
-  Function setup;
 
-  ItemsDisplay({this.loop, this.pixel, this.setup});
+  ItemsDisplay({this.loop, this.pixel});
 
   @override
   _ItemsDisplayState createState() => _ItemsDisplayState();
@@ -347,7 +349,6 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       MatrixEngine._startNewPeriodic = _startPeriodic;
       _startPeriodic();
-      widget.setup();
     });
   }
 
@@ -401,11 +402,11 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
     );
   }
 
-  _startPeriodic() async {
+  _startPeriodic() async{
     MatrixEngine._loopControl?.cancel();
     MatrixEngine._loopControl = Timer.periodic(MatrixEngine._timer, (t) {
       setState(() {
-        widget.loop();
+        widget.loop(t.tick);
       });
     });
   }
