@@ -14,34 +14,46 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class Snake extends MatrixEngine {
-  static ItemControl top = ItemControl([]),left = ItemControl([]),down = ItemControl([]),right = ItemControl([]);
+  static ItemControl q1 = ItemControl([]);
 
   @override
   loop(int time) {
-
+    if (itemsList.length == yAxisLength * xAxisLength * 0.05) {
+      q1.removeAt(random.nextInt(q1.itemsIndex.length));
+    }
+    q1.join(
+        createItem(
+//            color: Colors.red ,
+            position: Point<int>(random.nextInt(xAxisLength),random.nextInt(yAxisLength)),
+            pixelMatrix: [[0,0]]
+        )
+    );
+    q1.moveDown(1);
   }
 
   @override
   setting() {
-    width = 20 ;
+    width = 100 ;
     circleTimer = 1 ;
     backgroundColor = Colors.black;
   }
 
   @override
   setup() {
-    for(var x = 0 ; x <xAxisLength;x++){
-      for(var y = 0 ; y <yAxisLength;y ++){
-        top.join(
-            createItem(
-                color: Colors.red ,
-                position: Point<int>(x,y),
-                pixelMatrix: [[0,0]]
-            )
-        );
-      }
-    }
+    
   }
 
+  @override
+  onTap() {
+//    q1.clear();
+  }
+  @override
+  onHorizontalDragUpdate(DragUpdateDetails details) {
+    q1.moveToPoint(Point<int>(details.localPosition.dx.toInt(),details.localPosition.dy.toInt()));
+  }
+  @override
+  onVerticalDragUpdate(DragUpdateDetails details) {
+    q1.moveToPoint(Point<int>(details.localPosition.dx.toInt(),details.localPosition.dy.toInt()));
 
+  }
 }

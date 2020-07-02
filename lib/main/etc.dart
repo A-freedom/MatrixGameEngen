@@ -49,28 +49,28 @@ class ItemControl {
   void moveUp(int p) {
     loopInItems((item) {
       item.itemPosition =
-          Point<int>(item.itemPosition.x, item.itemPosition.y - 1);
+          Point<int>(item.itemPosition.x, item.itemPosition.y - p);
     });
   }
 
   void moveDown(int p) {
     loopInItems((item) {
       item.itemPosition =
-          Point<int>(item.itemPosition.x, item.itemPosition.y + 1);
+          Point<int>(item.itemPosition.x, item.itemPosition.y + p);
     });
   }
 
   void moveLeft(int p) {
     loopInItems((item) {
       item.itemPosition =
-          Point<int>(item.itemPosition.x - 1, item.itemPosition.y);
+          Point<int>(item.itemPosition.x - p, item.itemPosition.y);
     });
   }
 
   void moveRight(int p) {
     loopInItems((item) {
       item.itemPosition =
-          Point<int>(item.itemPosition.x + 1, item.itemPosition.y);
+          Point<int>(item.itemPosition.x + p, item.itemPosition.y);
     });
   }
 

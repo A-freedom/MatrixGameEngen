@@ -10,25 +10,23 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:engen/main/etc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 // ignore: must_be_immutable
 abstract class MatrixEngine extends StatefulWidget {
-
-  MatrixEngine(){
-    setting() ;
+  MatrixEngine() {
+    setting();
   }
 
   void Function() rebuild;
 
-  /*++++++++++++++++setter++++++++++++++++*/
-
-
+/*++++++++++++++++setter++++++++++++++++*/
 
   set circleTimer(int fps) {
-    _timer = Duration(milliseconds: fps) ;
-    if(isNotNull(_startNewPeriodic)){
+    _timer = Duration(milliseconds: fps);
+    if (isNotNull(_startNewPeriodic)) {
       _startNewPeriodic();
     }
 //    if(isNotNull(rebuild)){
@@ -38,32 +36,32 @@ abstract class MatrixEngine extends StatefulWidget {
 
   set width(int width) {
     _xAxisLength = width;
-    if(isNotNull(rebuild)) rebuild();
+    if (isNotNull(rebuild)) rebuild();
   }
 
   set interactWithTheEdges(String react) => _interactWithTheEdges = react;
 
   set gestureSize(Size size) {
     _gestureSize = size;
-    if(isNotNull(rebuild)) rebuild();
-
+    if (isNotNull(rebuild)) rebuild();
   }
 
   set pixel(Function pi) {
-    _pixel = pi ;
+    _pixel = pi;
   }
 
-  set itemsList(Map list){
-    items = list ;
+  set itemsList(Map list) {
+    items = list;
   }
 
-  set setBackgroundColor(Color color){
-    backgroundColor = color ;
+  set setBackgroundColor(Color color) {
+    backgroundColor = color;
 //    rebuild() ;
   }
-  /*++++++++++++++++getter++++++++++++++++*/
 
-  /*this just a instance of R&om class I put it here just because I thought it
+/*++++++++++++++++getter++++++++++++++++*/
+
+/*this just a instance of R&om class I put it here just because I thought it
   * it will get used so many times in any future functions of user usage
   *
   * NOTE: I disable this variable until I will need it*/
@@ -86,7 +84,7 @@ abstract class MatrixEngine extends StatefulWidget {
 
   Timer get loopControl => _loopControl;
 
-  Map get itemsList => items ;
+  Map get itemsList => items;
 
   Function _pixel = ({Color color}) {
     return Container(
@@ -100,17 +98,16 @@ abstract class MatrixEngine extends StatefulWidget {
       ),
     );
   };
-  /*++++++++++++++++OVERRIDE ASSERT++++++++++++++++*/
 
+/*++++++++++++++++OVERRIDE ASSERT++++++++++++++++*/
 
   loop(int time);
 
   setup();
 
-  setting() ;
+  setting();
 
-
-  /*???????????????? TOUCH CONTROL ????????????????*/
+/*???????????????? TOUCH CONTROL ????????????????*/
 
   onTap() {}
 
@@ -144,22 +141,22 @@ abstract class MatrixEngine extends StatefulWidget {
 
   onHorizontalDragUpdate(DragUpdateDetails details) {}
 
-  /*++++++++++++++++Public allowed+++++++++++++++*/
+/*++++++++++++++++Public allowed+++++++++++++++*/
 
   static String _interactWithTheEdges = 'invert';
 
   static Offset engineOffset;
 
-  /* it is the size of the Widget builder*/
+/* it is the size of the Widget builder*/
   static Size _boxSize;
 
-  /* it is the size of one pixel */
+/* it is the size of one pixel */
   static Size _pixelSize;
 
-  /* it is the size of touch area */
+/* it is the size of touch area */
   Size _gestureSize;
 
-  /*the amount of pixel in x axis & y axis
+/*the amount of pixel in x axis & y axis
   * the $xAxisCount got a default value is 10
   * but still it most likely that the user will set this value
   * the 10 value here for just avoid
@@ -167,36 +164,38 @@ abstract class MatrixEngine extends StatefulWidget {
   * & the $yAxisCount it get set by the screen height */
   static int _xAxisLength = 10, _yAxisLength;
 
-  /* this is the array of (x,y) matrix
+/* this is the array of (x,y) matrix
   *  it is work by first set each pixel globalKey the after all widget tree get
   * rendered it will run the get $getPositions(GlobalKey k) function  then set
   * the value in its place in the $_offsetList 2D matrix
   * NOTE: the $_keysList is set to static & the $_keyList is moved to $ItemsDisplay class*/
 //  static List<List<Key>> _keysList = new List();
 
-  /*this is the main loop it will call the 'periodic' Depending on the timer
+/*this is the main loop it will call the 'periodic' Depending on the timer
   * the periodic will fire the $logic() function then rebuild the $Viewer Widget
   *
   * NOTE: these tow variable are set to static because I needed to control
   * them from $ItemsDisplay class */
 
   static Timer _loopControl;
-  static Duration _timer ;
+  static Duration _timer;
 
-  /*this is the list of item that will build on  the screen in each frame
+/*this is the list of item that will build on  the screen in each frame
   * the $Items class could content a list of points & its color that will render
   * on the screen & could content list of $Items that should in theory help to
   * render complex object on the screen than control them*/
-  static Map<UniqueKey,Item> items = new Map<UniqueKey,Item>();
+  static Map<UniqueKey, Item> items = new Map<UniqueKey, Item>();
 
-  /*++++++++++++++++THIS CLASS FUNCTIONS++++++++++++++++*/
+/*++++++++++++++++THIS CLASS FUNCTIONS++++++++++++++++*/
 
   ItemControl createItem(
       {List<List<int>> pixelMatrix, Color color, Point<int> position}) {
     final coordinates = pixelMatrix.map((e) => Point<int>(e[0], e[1])).toList();
-    color = (isNotNull(color))?color:Color.fromRGBO(random.nextInt(244), random.nextInt(244),
-        random.nextInt(244), random.nextInt(244).toDouble());
-    final key = new UniqueKey() ;
+    color = (isNotNull(color))
+        ? color
+        : Color.fromRGBO(random.nextInt(244), random.nextInt(244),
+            random.nextInt(244), random.nextInt(244).toDouble());
+    final key = new UniqueKey();
     items[key] = (Item(
         pixelsCoordinates: (coordinates),
         itemPosition: position,
@@ -204,7 +203,7 @@ abstract class MatrixEngine extends StatefulWidget {
     return ItemControl([key]);
   }
 
-  /*this function is get set from low level class . it use to set new timer &
+/*this function is get set from low level class . it use to set new timer &
   * fire setState from the class $ItemsViewer .
   *
   * NOTE : the itemsViewer for now is function in the future it will get refactor
@@ -214,29 +213,30 @@ abstract class MatrixEngine extends StatefulWidget {
   * the function get set to static*/
   static Function _startNewPeriodic;
 
-  /* create the main Widget by Override the createState() */
+/* create the main Widget by Override the createState() */
   @override
   _MatrixEngineState createState() => _MatrixEngineState();
 }
 
 class _MatrixEngineState extends State<MatrixEngine> with MyMath {
-  /*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
+/*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      widget.setup() ;
+      widget.setup();
     });
     super.initState();
   }
+
   @override
   void setState(fn) {
-    if(MatrixEngine._startNewPeriodic != null){
-      widget.setup() ;
+    if (MatrixEngine._startNewPeriodic != null) {
+      widget.setup();
     }
-    //TODO remove this when you be out of developing time
+//TODO remove this when you be out of developing time
     super.setState(fn);
   }
 
-  /*override the build function to  build my engine widget*/
+/*override the build function to  build my engine widget*/
   @override
   Widget build(BuildContext context) {
     widget.rebuild = () => setState(() {});
@@ -276,21 +276,21 @@ class _MatrixEngineState extends State<MatrixEngine> with MyMath {
       },
       child: LayoutBuilder(builder: (context, constraints) {
         MatrixEngine.engineOffset = constraints.biggest.topLeft(Offset.zero);
-        /* by default it is grey */
+/* by default it is grey */
         widget.backgroundColor ??= Colors.grey;
 
-        /* by default owner widget */
+/* by default owner widget */
         MatrixEngine._boxSize ??= constraints.biggest;
 
-        /* it is the size of the touch listener by default owner widget */
+/* it is the size of the touch listener by default owner widget */
         widget._gestureSize ??= MatrixEngine._boxSize;
 
-        /* it is automatic set dependent to the boxSize & the xAxisCount  */
+/* it is automatic set dependent to the boxSize & the xAxisCount  */
         MatrixEngine._pixelSize ??= Size(
             (MatrixEngine._boxSize.width / MatrixEngine._xAxisLength),
             (MatrixEngine._boxSize.width / MatrixEngine._xAxisLength));
 
-        /* by default it get by divided the widget height into the one pixel size  */
+/* by default it get by divided the widget height into the one pixel size  */
         MatrixEngine._yAxisLength ??=
             (MatrixEngine._boxSize.height ~/ MatrixEngine._pixelSize.width)
                 .toInt();
@@ -311,8 +311,7 @@ class _MatrixEngineState extends State<MatrixEngine> with MyMath {
 //                }).toList(),
 //              )
 //              ,
-              ItemsDisplay(
-                  pixel: widget._pixel, loop: widget.loop)
+              ItemsDisplay(pixel: widget._pixel, loop: widget.loop)
             ],
           ),
         );
@@ -333,16 +332,16 @@ class ItemsDisplay extends StatefulWidget {
 }
 
 class _ItemsDisplayState extends State<ItemsDisplay> {
-  /*++++++++++++++++DEFINE GLOBAL VALUES++++++++++++++++*/
+/*++++++++++++++++DEFINE GLOBAL VALUES++++++++++++++++*/
 
-  /*this 2D matrix used to save all pixels positioned
+/*this 2D matrix used to save all pixels positioned
   *
   * NOTE: the value used to be in the main engine class
   * it get moved to here because be in the main class t is no longer required */
 
-  /*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
+/*++++++++++++++++OVERRIDE EXTENDS FUNCTIONS++++++++++++++++*/
 
-  /*this override used to fire some functions once this widget get render*/
+/*this override used to fire some functions once this widget get render*/
   @override
   void initState() {
     super.initState();
@@ -379,30 +378,28 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
         MatrixEngine._interactWithTheEdges == 'cross' ||
         MatrixEngine._interactWithTheEdges == 'block');
 
-    final list = List<Widget>();
+    final list = List<PixelOffset>();
     MatrixEngine.items.values.forEach((item) {
       item.pixelsCoordinates.forEach((p) {
         item.itemPosition = intPoint(foo(item.itemPosition));
         Point point = foo(p + item.itemPosition);
         point *= MatrixEngine._pixelSize.width;
-        list.add(Positioned(
-          top: point.y,
-          left: point.x,
-          child: widget.pixel(color: item.color),
-        ));
+        list.add(PixelOffset(point.x, point.y, item.color));
       });
     });
     return Container(
       child: Stack(
-        children: list,
-        overflow: (MatrixEngine._interactWithTheEdges == 'cross')
-            ? Overflow.visible
-            : Overflow.clip,
+        children: <Widget>[
+          CustomPaint(
+            painter: PixelsPainter(list),
+            size: MatrixEngine._boxSize,
+          )
+        ],
       ),
     );
   }
 
-  _startPeriodic() async{
+  _startPeriodic() async {
     MatrixEngine._loopControl?.cancel();
     MatrixEngine._loopControl = Timer.periodic(MatrixEngine._timer, (t) {
       setState(() {
@@ -417,4 +414,33 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
   }
 
   Point<int> intPoint(Point p) => Point<int>(p.x.toInt(), p.y.toInt());
+}
+
+class PixelOffset extends Offset {
+  final Color color;
+
+  PixelOffset(double dx, double dy, this.color) : super(dx, dy);
+}
+
+class PixelsPainter extends CustomPainter {
+  final List<PixelOffset> list;
+
+  PixelsPainter(this.list);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+
+    var fillBrush = Paint();
+
+    list.forEach((pixelOffset) {
+      fillBrush.color = pixelOffset.color;
+      canvas.drawRect(
+          Rect.fromCircle(radius: MatrixEngine._pixelSize.width/2, center: pixelOffset), fillBrush);
+    });
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
 }
