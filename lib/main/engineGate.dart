@@ -68,7 +68,7 @@ abstract class MatrixEngine extends StatefulWidget {
 
   Random random = new Random();
 
-  Color backgroundColor;
+  Color backgroundColor = Colors.grey;
 
   Offset get enginePosition => engineOffset;
 
@@ -227,15 +227,6 @@ class _MatrixEngineState extends State<MatrixEngine> with MyMath {
     super.initState();
   }
 
-  @override
-  void setState(fn) {
-    if (MatrixEngine._startNewPeriodic != null) {
-      widget.setup();
-    }
-//TODO remove this when you be out of developing time
-    super.setState(fn);
-  }
-
 /*override the build function to  build my engine widget*/
   @override
   Widget build(BuildContext context) {
@@ -276,44 +267,25 @@ class _MatrixEngineState extends State<MatrixEngine> with MyMath {
       },
       child: LayoutBuilder(builder: (context, constraints) {
         MatrixEngine.engineOffset = constraints.biggest.topLeft(Offset.zero);
-/* by default it is grey */
-        widget.backgroundColor ??= Colors.grey;
-
-/* by default owner widget */
+        /* by default owner widget */
         MatrixEngine._boxSize ??= constraints.biggest;
 
-/* it is the size of the touch listener by default owner widget */
+        /* it is the size of the touch listener by default owner widget */
         widget._gestureSize ??= MatrixEngine._boxSize;
 
-/* it is automatic set dependent to the boxSize & the xAxisCount  */
+        /* it is automatic set dependent to the boxSize & the xAxisCount  */
         MatrixEngine._pixelSize ??= Size(
             (MatrixEngine._boxSize.width / MatrixEngine._xAxisLength),
             (MatrixEngine._boxSize.width / MatrixEngine._xAxisLength));
 
 /* by default it get by divided the widget height into the one pixel size  */
         MatrixEngine._yAxisLength ??=
-            (MatrixEngine._boxSize.height ~/ MatrixEngine._pixelSize.width)
+            (MatrixEngine._boxSize.height ~/ MatrixEngine._pixelSize.height)
                 .toInt();
 
         return Container(
           color: widget.backgroundColor,
-          child: Stack(
-            children: <Widget>[
-//              Row(
-//                mainAxisAlignment: MainAxisAlignment.center,
-//                children: List(MatrixEngine._xAxisLength).map((e) {
-//                  return Column(
-//                    children: List(MatrixEngine._yAxisLength).map((e) {
-//                      final w = widget._pixel();
-//                      return w;
-//                    }).toList(),
-//                  );
-//                }).toList(),
-//              )
-//              ,
-              ItemsDisplay(pixel: widget._pixel, loop: widget.loop)
-            ],
-          ),
+          child: ItemsDisplay(pixel: widget._pixel, loop: widget.loop),
         );
       }),
     );
@@ -380,22 +352,22 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
 
     final list = List<PixelOffset>();
     MatrixEngine.items.values.forEach((item) {
+
       item.pixelsCoordinates.forEach((p) {
+
         item.itemPosition = intPoint(foo(item.itemPosition));
-        Point point = foo(p + item.itemPosition);
+
+        Point point = foo(p + item.itemPosition );
         point *= MatrixEngine._pixelSize.width;
+        point += Point<double>(MatrixEngine._pixelSize.width/2,MatrixEngine._pixelSize.height/2);
+
         list.add(PixelOffset(point.x, point.y, item.color));
+
       });
     });
-    return Container(
-      child: Stack(
-        children: <Widget>[
-          CustomPaint(
-            painter: PixelsPainter(list),
-            size: MatrixEngine._boxSize,
-          )
-        ],
-      ),
+    return CustomPaint(
+      painter: PixelsPainter(list),
+      size: MatrixEngine._boxSize,
     );
   }
 
@@ -408,10 +380,6 @@ class _ItemsDisplayState extends State<ItemsDisplay> {
     });
   }
 
-  Offset getPositionByPoint(Point<int> coordinatePoint) {
-    return Offset(coordinatePoint.x * MatrixEngine._boxSize.width,
-        coordinatePoint.y * MatrixEngine._boxSize.height);
-  }
 
   Point<int> intPoint(Point p) => Point<int>(p.x.toInt(), p.y.toInt());
 }
@@ -429,13 +397,15 @@ class PixelsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-
     var fillBrush = Paint();
 
     list.forEach((pixelOffset) {
       fillBrush.color = pixelOffset.color;
-      canvas.drawRect(
-          Rect.fromCircle(radius: MatrixEngine._pixelSize.width/2, center: pixelOffset), fillBrush);
+//      canvas.drawRect(
+//          Rect.fromCircle(
+//              radius: MatrixEngine._pixelSize.width/2, center: pixelOffset),
+//          fillBrush);
+        canvas.drawCircle(pixelOffset, MatrixEngine._pixelSize.width/2.2, fillBrush);
     });
   }
 

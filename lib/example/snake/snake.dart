@@ -18,7 +18,7 @@ class Snake extends MatrixEngine {
 
   @override
   loop(int time) {
-    if (itemsList.length == yAxisLength * xAxisLength * 0.05) {
+    if (itemsList.length == yAxisLength * xAxisLength * 0.5) {
       q1.removeAt(random.nextInt(q1.itemsIndex.length));
     }
     q1.join(
@@ -33,7 +33,7 @@ class Snake extends MatrixEngine {
 
   @override
   setting() {
-    width = 100 ;
+    width = 1000 ;
     circleTimer = 1 ;
     backgroundColor = Colors.black;
   }

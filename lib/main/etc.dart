@@ -74,9 +74,9 @@ class ItemControl {
     });
   }
 
-  void moveToPoint(Point point) {
-    itemsIndex.forEach((index) {
-      MatrixEngine.items[index].itemPosition = Point<int>(point.x, point.y);
+  void moveToPoint(Point<int> point) {
+    loopInItems((item) {
+      item.itemPosition = point ;
     });
   }
 
